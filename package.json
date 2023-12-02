@@ -1,0 +1,12 @@
+{
+  "name": "adventofcode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "func() { cd $(date +%Y)/aoc_$(date +%Y)_$1 && cargo run; }; func"
+  },
+  "keywords": [],
+  "author": "j@juliannymark.com",
+  "license": "MIT"
+}
