@@ -6,18 +6,25 @@ fn main() {
 
     let re = Regex::new(r"[0-9]").unwrap();
 
+    let mut total = 0;
+
     for line in file_contents.lines() {
+        let reversed_line = reverse(line);
+
         let first_match = re.find(line).unwrap();
-        // let reversed_line = reverse(&line);
-        let last_match = re.find(reverse(line)).unwrap();
-        // println!("{line}");
-        println!("first_match: {}", first_match.as_str());
-        println!("last_match: {}", last_match.as_str());
+        let last_match = re.find(reversed_line.as_str()).unwrap();
+
+        let first_num = first_match.as_str().parse::<u32>().unwrap();
+        let last_num = last_match.as_str().parse::<u32>().unwrap();
+
+        let calibration_value = (first_num * 10) + last_num;
+
+        total += calibration_value;
     }
 
-    // println!("{}", file_contents.unwrap());
+    println!("{}", total);
 }
 
-fn reverse(s: &str) -> &str {
-    s.chars().rev().collect::<String>().as_str()
+fn reverse(s: &str) -> String {
+    s.chars().rev().collect::<String>()
 }
