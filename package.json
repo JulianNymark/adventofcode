@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "func() { cd $(date +%Y)/aoc_$(date +%Y)_$1 && cargo run; }; func"
+    "start": "func() { cd $(date +%Y)/aoc_$(date +%Y)_$1 && cargo run --quiet; }; func"
   },
   "keywords": [],
   "author": "j@juliannymark.com",
