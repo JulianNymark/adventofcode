@@ -2,6 +2,13 @@ use regex::Regex;
 use std::fs;
 
 fn main() {
+    part_1();
+    part_2();
+}
+
+fn part_2() {}
+
+fn part_1() {
     let file_contents = fs::read_to_string("input.txt").unwrap();
 
     let re = Regex::new(r"[0-9]").unwrap();
@@ -22,7 +29,7 @@ fn main() {
         total += calibration_value;
     }
 
-    println!("{}", total);
+    println!("part 1: {}", total);
 }
 
 fn reverse(s: &str) -> String {
