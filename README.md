@@ -11,5 +11,5 @@ npm run start <day_number>
 ```shell
 mkdir <YEAR>
 cd <YEAR>
-cargo new aoc_<YEAR>_<DAY>
+cargo new day_<DAY>
 ```
