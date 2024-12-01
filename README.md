@@ -1,10 +1,11 @@
 # how to run
 
 ```shell
-npm run start <day_number>
+npm run start [ day_number ]
+npm run test [ day_number ]
 ```
 
-(the year should be automatically selected)
+the year (and optionally day) should be automatically selected
 
 # start new year / day exercise
 
