@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "func() { cd $(date +%Y)/day_${1:-1} && cargo run --quiet; }; func"
+    "start": "func() { cd $(date +%Y)/day_${1:-1} && cargo run --quiet; }; func",
+    "test": "func() { cd $(date +%Y)/day_${1:-1} && cargo test; }; func"
   },
   "keywords": [],
   "author": "j@juliannymark.com",
