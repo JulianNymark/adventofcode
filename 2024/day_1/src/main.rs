@@ -52,9 +52,8 @@ fn wack_similarity_score_algo(list1: &Vec<&str>, list2: &Vec<&str>) -> u32 {
     for (_idx, value) in list1.into_iter().enumerate() {
         let num1 = value.parse::<i32>().unwrap();
 
-        // TODO: grok && vs & vs *, why does it become a && from using filter?
-        // is a & on the LHS the same as a * on the RHS? (dereference?)
-        let filtered_list: Vec<&&str> = list2.iter().filter(|&e| e == value).collect();
+        // TODO: why does filter add another reference? (now I map deref it to get same type out)
+        let filtered_list: Vec<&str> = list2.iter().filter(|&e| e == value).map(|&e| e).collect();
         let count: i32 = filtered_list.len().try_into().unwrap();
         similarity += count * num1;
     }
