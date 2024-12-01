@@ -1,3 +1,62 @@
+//! [Day one](https://adventofcode.com/2024/day/1) was pretty fun!
+//!
+//! Couldn't quite understand the "logic" behind the similarity function
+//! (how it was supposed to represent similarity). But other than that
+//! good stuff!
+//!
+//! I'm at the start of my rust journey, so this was amazing as a
+//! way to learn so much!
+//!
+//! Below are some random notes!
+//!
+//! # Crazy compiler output
+//!
+//! Rust has no `++` operator, so it was fun to see the rust compiler include suggestions to
+//! convert code from _other_ programming languages syntax into rust!... what!?
+//! ```
+//! count ++;
+//! ```
+//! The compiler suggests that it should be:
+//! ```
+//! count += 1;
+//! ```
+//!
+//! On many occasions it really seems to _know_ what I wanted to do, and suggest code changes
+//! to do the thing I wanted (but correctly). I don't use compilers much, but this one is amazing!
+//!
+//! # `.into_iter()`
+//!
+//! `.into_iter()` will sometimes create T, and sometimes &T (I'm not sure about when it does
+//! which). So having the choices below:
+//! ```
+//! list2.iter().copied().filter(|e| e == value).collect() // probably the "best" here.
+//! list2.iter().map(|&e| e).filter(|e| e == value).collect() // explicit dereference mapping
+//! list2.iter().filter(|&e| e == value).collect() // gives type Vec<&&str>
+//! ```
+//! Can't easily be replaced by using `.into_iter()` over `.iter()` with the hopes of avoiding
+//! the double reference `&&` you would get in all those choices. Using `.copied()` seems to
+//! be the de facto way to solve the "When you have an iterator over `&T`, but you need an iterator over `T`" issue.
+//!
+//! # more choices
+//!
+//! For the code segment that splits and iterates over the input.txt contents:
+//! ```
+//! let mut split_lines_iter = line.split_whitespace();
+//! let list_a_location = split_lines_iter.next().unwrap();
+//! let list_b_location = split_lines_iter.next().unwrap();
+//! ```
+//! I could have gone with a loop extraction like this:
+//! ```
+//! for (idx, location_id) in line.split_whitespace().enumerate() {
+//!      if (idx == 0) {
+//!       ...
+//!      }
+//! }
+//! ```
+//! I opted for a the first more explicit extraction however.
+//! I like it more since we expect / assume exactly 2 elements
+//! per line.
+
 use std::fs;
 
 #[cfg(test)]
@@ -40,22 +99,26 @@ mod tests {
     }
 }
 
-fn sort_string_nums(string_nums: Vec<&str>) -> Vec<&str> {
+/// Sort a list of strings
+///
+/// currently does not look into the numerical value of the string itself.
+/// it's a simple string sort.
+pub fn sort_string_nums(string_nums: Vec<&str>) -> Vec<&str> {
     let mut copy = string_nums.clone();
     copy.sort();
     copy
 }
 
+/// Strange algorithm for day 1 part 2.
+///
+/// I have no clue how this scoring system is supposed to extract "similarity" between the two
+/// lists
 fn wack_similarity_score_algo(list1: &Vec<&str>, list2: &Vec<&str>) -> u32 {
     let mut similarity = 0;
 
     for (_idx, value) in list1.into_iter().enumerate() {
         let num1 = value.parse::<i32>().unwrap();
 
-        // TODO: choices
-        // I can do `list2.iter().copied().filter(|e| e == value).collect()`      (cleanest?)
-        // or `list2.iter().map(|&e| e).filter(|e| e == value).collect()`         (uglier?)
-        // or `list2.iter().filter(|&e| e == value).collect()` and get Vec<&&str> (ugliest?)
         let filtered_list: Vec<&str> = list2.iter().copied().filter(|e| e == value).collect();
         let count: i32 = filtered_list.len().try_into().unwrap();
         similarity += count * num1;
@@ -64,11 +127,10 @@ fn wack_similarity_score_algo(list1: &Vec<&str>, list2: &Vec<&str>) -> u32 {
     similarity.try_into().unwrap()
 }
 
-/*
-SAD == Sum of Absolute Differences
-ASSUMPTION: both iterables must be of the same length
-*/
-fn sad(list1: &Vec<&str>, list2: &Vec<&str>) -> u32 {
+/// Sum of Absolute Differences
+///
+/// Assumes both iterables are of the same length.
+pub fn sad(list1: &Vec<&str>, list2: &Vec<&str>) -> u32 {
     let mut sum = 0;
 
     for (idx, value) in list1.into_iter().enumerate() {
@@ -88,20 +150,6 @@ fn part_1() {
     let mut list_b: Vec<&str> = Vec::new();
 
     for line in input.split("\n") {
-        // variant 1: loop
-        /*
-        for (idx, location_id) in line.split_whitespace().enumerate() {
-        println!("({}) {}", idx, location_id);
-        //     if (idx == 0) {
-        //      ...
-        //     }
-        }
-        */
-
-        // variant 2: more explicit extraction
-        // I like this one since we expect / assume 2 elements
-        // per line
-
         // WHY: the last entry will be None (from split on last `\n` in file)
         if line != "" {
             let mut split_lines_iter = line.split_whitespace();
