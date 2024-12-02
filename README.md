@@ -12,5 +12,5 @@ the year (and optionally day) should be automatically selected
 ```shell
 mkdir <YEAR>
 cd <YEAR>
-cargo new --vcs git day_<DAY>
+cargo new day_<DAY>
 ```
