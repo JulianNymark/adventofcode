@@ -141,7 +141,7 @@ fn dampen_report(report: Report) -> Report {
 /// assumes a vec of at least 2 numbers.
 ///
 /// 555 ... x ... 565: could check all 10 manually
-fn score_report(report: Report) -> i32 {
+fn _score_report(report: Report) -> i32 {
     let mut badnesss = 0;
     let mut dir = 0;
 
@@ -175,6 +175,46 @@ fn score_report(report: Report) -> i32 {
         }
     }
     return badnesss;
+}
+
+fn dir(old: i32, new: i32) -> i32 {
+    if new - old > 0 {
+        return 1;
+    } else if new - old < 0 {
+        return -1;
+    } else {
+        return 0;
+    }
+}
+
+fn score_report(report: Report) -> i32 {
+    let mut last_seen = report[0];
+    let mut direction = dir(last_seen, report[1]);
+    let mut last_direction = direction;
+    let mut badness = 0;
+
+    if direction == 0 {
+        badness += 1;
+    }
+
+    for &level in &report[1..] {
+        direction = dir(last_seen, level);
+
+        let abs_diff = (level - last_seen).abs();
+
+        if direction != last_direction {
+            badness += 1;
+        } else if abs_diff > 3 {
+            badness += 1;
+        } else if direction == 0 {
+            badness += 1;
+        }
+
+        last_seen = level;
+        last_direction = direction;
+    }
+
+    badness
 }
 
 fn part_1() {
