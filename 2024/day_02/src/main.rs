@@ -21,12 +21,12 @@ mod tests {
 
     #[test]
     fn test_4() {
-        assert_eq!(score_report(vec![1, 3, 2, 4, 5]), 1)
+        assert_eq!(score_report(vec![1, 3, 2, 4, 5]), 2)
     }
 
     #[test]
     fn test_5() {
-        assert_eq!(score_report(vec![8, 6, 4, 4, 1]), 1)
+        assert_eq!(score_report(vec![8, 6, 4, 4, 1]), 2)
     }
 
     #[test]
@@ -36,70 +36,19 @@ mod tests {
 
     #[test]
     fn test_7() {
-        assert_eq!(score_report(vec![8, 3, 6, 7, 9]), 4)
-    }
-
-    #[test]
-    fn test_8() {
-        assert_eq!(score_report(dampen_report(vec![8, 3, 6, 7, 9])), 2)
-    }
-
-    #[test]
-    fn test_9() {
-        assert_eq!(dampen_report(vec![8, 3, 6, 7, 9]), vec![8, 6, 7, 9])
-    }
-
-    #[test]
-    fn test_10() {
-        assert_eq!(dampen_report(vec![1, 2, 9]), vec![1, 2])
-    }
-
-    #[test]
-    fn test_11() {
-        assert_eq!(dampen_report(vec![1, 2, 3, 2, 1]), vec![1, 2, 2, 1])
-    }
-
-    #[test]
-    fn test_12() {
-        assert_eq!(dampen_report(vec![1, 2, 10, 11, 12]), vec![1, 2, 11, 12])
-    }
-
-    #[test]
-    fn test_13() {
-        assert_eq!(dampen_report(vec![1, 2, 3, 4, 4]), vec![1, 2, 3, 4])
-    }
-
-    #[test]
-    fn test_14() {
-        assert_eq!(dampen_report(vec![1, 1, 2, 3, 4, 4]), vec![1, 2, 3, 4, 4])
-    }
-
-    #[test]
-    fn test_15() {
-        assert_eq!(
-            dampen_report(vec![40, 41, 42, 45, 47, 51, 53, 60]),
-            vec![40, 41, 42, 45, 47, 53, 60]
-        )
+        assert_eq!(score_report(vec![8, 3, 6, 7, 9]), 2)
     }
 
     #[test]
     fn test_16() {
-        assert_eq!(score_report(vec![72, 72, 74, 72, 75, 78, 80, 86]), 3)
-    }
-
-    #[test]
-    fn test_17() {
-        assert_eq!(
-            score_report(dampen_report(vec![72, 72, 74, 72, 75, 78, 80, 86])),
-            2
-        )
+        assert_eq!(score_report(vec![72, 72, 74, 72, 75, 78, 80, 86]), 6)
     }
 }
 
 type Report = Vec<i32>;
 
 /// will remove the first bad level if found
-fn dampen_report(report: Report) -> Report {
+fn _dampen_report(report: Report) -> Report {
     let mut dir = 0;
 
     for (idx, level) in report[..report.len() - 1].iter().enumerate() {
@@ -177,19 +126,9 @@ fn _score_report(report: Report) -> i32 {
     return badnesss;
 }
 
-fn dir(old: i32, new: i32) -> i32 {
-    if new - old > 0 {
-        return 1;
-    } else if new - old < 0 {
-        return -1;
-    } else {
-        return 0;
-    }
-}
-
 fn score_report(report: Report) -> i32 {
     let mut last_seen = report[0];
-    let mut direction = dir(last_seen, report[1]);
+    let mut direction = utils::dir(last_seen, report[1]);
     let mut last_direction = direction;
     let mut badness = 0;
 
@@ -198,7 +137,7 @@ fn score_report(report: Report) -> i32 {
     }
 
     for &level in &report[1..] {
-        direction = dir(last_seen, level);
+        direction = utils::dir(last_seen, level);
 
         let abs_diff = (level - last_seen).abs();
 
@@ -237,7 +176,9 @@ fn part_2() {
     let mut safe_count = 0;
 
     for report in reports {
-        if score_report(dampen_report(report)) == 0 {
+        let variants = utils::variants_drop(&report);
+
+        if utils::min(&variants.iter().map(|x| score_report(x.to_vec())).collect()) == 0 {
             safe_count += 1;
         }
     }
