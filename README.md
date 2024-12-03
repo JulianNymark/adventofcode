@@ -13,4 +13,6 @@ the year (and optionally day) should be automatically selected
 mkdir <YEAR>
 cd <YEAR>
 cargo new day_<DAY>
+cd day_<DAY>
+cargo add --path ../../utils
 ```
