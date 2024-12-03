@@ -1,5 +1,4 @@
 //! # `"{:?}"` can be used to debug! (calls not Display, but Debug... trait?)
-use std::fs;
 
 #[cfg(test)]
 mod tests {
@@ -178,30 +177,8 @@ fn score_report(report: Report) -> i32 {
     return badnesss;
 }
 
-fn get_reports(file_name: &str) -> Vec<Report> {
-    let input = fs::read_to_string(file_name)
-        .expect(format!("expected to read file {}", file_name).as_str());
-
-    let mut reports: Vec<Report> = Vec::new();
-
-    for line in input.split("\n") {
-        // WHY: the last entry will be None (from split on last `\n` in file)
-        if line != "" {
-            let split_lines_iter = line.split_whitespace();
-            let mut report: Report = Vec::new();
-            for value in split_lines_iter {
-                let num = value.parse::<i32>().unwrap();
-                report.push(num);
-            }
-            reports.push(report);
-        }
-    }
-
-    reports
-}
-
 fn part_1() {
-    let reports = get_reports("./input.txt");
+    let reports = utils::lines_i32("./input.txt");
 
     let mut safe_count = 0;
 
@@ -215,7 +192,7 @@ fn part_1() {
 }
 
 fn part_2() {
-    let reports = get_reports("./input.txt");
+    let reports = utils::lines_i32("./input.txt");
 
     let mut safe_count = 0;
 
