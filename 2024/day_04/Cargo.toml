@@ -1,0 +1,8 @@
+[package]
+name = "day_04"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+grid = "0.15.0"
+utils = { version = "0.1.0", path = "../../utils" }
