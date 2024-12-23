@@ -67,6 +67,8 @@ const DIRECTIONS: [(i32, i32); 8] = [
     (-1, -1),
 ];
 
+const X_DIRECTIONS: [(i32, i32); 4] = [(1, -1), (1, 1), (-1, 1), (-1, -1)];
+
 /// check all 8 directions on grid N, NE, E, SE, S, SW, W, NW
 fn sweep_rotate_xmas_count(grid: &Grid<char>, row_idx: usize, col_idx: usize) -> i32 {
     let mut count = 0;
@@ -96,7 +98,7 @@ fn sweep_rotate_x_mas_count(
     row_idx: usize,
     col_idx: usize,
 ) {
-    for (idx, direction) in DIRECTIONS.iter().enumerate() {
+    for (idx, direction) in X_DIRECTIONS.iter().enumerate() {
         let x = TryInto::<i32>::try_into(row_idx).unwrap();
         let y = TryInto::<i32>::try_into(col_idx).unwrap();
 
@@ -106,15 +108,15 @@ fn sweep_rotate_x_mas_count(
         let sample_a = grid.get(dir_1.0, dir_1.1).unwrap_or(&'\0');
         let sample_s = grid.get(dir_2.0, dir_2.1).unwrap_or(&'\0');
         if *sample_a == 'A' && *sample_s == 'S' {
-            let potential_location = dir_1;
-            let orthogonal_dir = orthogonal(DIRECTIONS, idx);
+            let potential_location_center = dir_1;
+            let orthogonal_dir = orthogonal(X_DIRECTIONS, idx);
             let ortho_dir_1 = (
-                potential_location.0 + orthogonal_dir.0,
-                potential_location.1 + orthogonal_dir.1,
+                potential_location_center.0 + orthogonal_dir.0,
+                potential_location_center.1 + orthogonal_dir.1,
             );
             let ortho_dir_mirror = (
-                potential_location.0 + (orthogonal_dir.0 * -1),
-                potential_location.1 + (orthogonal_dir.1 * -1),
+                potential_location_center.0 + -orthogonal_dir.0,
+                potential_location_center.1 + -orthogonal_dir.1,
             );
 
             let sample_ortho_1 = grid.get(ortho_dir_1.0, ortho_dir_1.1).unwrap_or(&'\0');
@@ -125,14 +127,14 @@ fn sweep_rotate_x_mas_count(
             if (*sample_ortho_1 == 'M' && *sample_ortho_mirror == 'S')
                 || (*sample_ortho_1 == 'S' && *sample_ortho_mirror == 'M')
             {
-                unique_locations.insert(potential_location);
+                unique_locations.insert(potential_location_center);
             }
         }
     }
 }
 
-fn orthogonal(directions: [(i32, i32); 8], index: usize) -> (i32, i32) {
-    return directions[(index + 2) % directions.len()];
+fn orthogonal(directions: [(i32, i32); 4], index: usize) -> (i32, i32) {
+    directions[(index + 1) % directions.len()]
 }
 
 fn _print_grid(grid: &Grid<char>) {
@@ -147,9 +149,9 @@ mod tests {
 
     #[test]
     fn orthogonal_works() {
-        assert_eq!(orthogonal(DIRECTIONS, 3), (-1, 1));
-        assert_eq!(orthogonal(DIRECTIONS, 0), (1, 0));
-        assert_eq!(orthogonal(DIRECTIONS, 7), (1, -1));
+        assert_eq!(orthogonal(X_DIRECTIONS, 0), (1, 1));
+        assert_eq!(orthogonal(X_DIRECTIONS, 1), (-1, 1));
+        assert_eq!(orthogonal(X_DIRECTIONS, 2), (-1, -1));
     }
 
     #[test]
